@@ -33,244 +33,245 @@
         </style>
         <title>Mapa do Programa Águas para Sempre</title>
     </head>
-        <body>
-            <div id="map-header">Mapa do Programa Águas para Sempre</div>
-            <div id="map"></div>
-            
-            <div class="button-group">
-                <button id="stats-btn">
-                  <img src="images/qui.svg" alt="Estatísticas">
-                  <span class="btn-text">Painel</span>
+    <body>
+        <div id="map-header">Mapa do Programa Águas para Sempre</div>
+        
+        <div class="button-group">
+            <button id="stats-btn">
+              <img src="images/qui.svg" alt="Estatísticas">
+              <span class="btn-text">Painel</span>
+            </button>
+          
+            <button id="chart-btn">
+              <img src="images/chartchar.svg" alt="Gráfico">
+              <span class="btn-text">Gráficos</span>
+            </button>
+        
+            <button id="details-btn">
+              <img src="images/detalhes.svg" alt="Sobre o Mapa">
+              <span class="btn-text">Detalhes</span>
+            </button>
+        </div>
+
+        <div id="coords"></div>
+
+        <div id="scale-control" class="scale-control">
+            <div id="scale-bar" class="scale-bar"></div>
+            <div id="scale-text" class="scale-text">0 m</div>
+        </div>
+
+        <div id="compass-container">
+            <img id="compass" src="images/compass2.svg" alt="Bússola">
+        </div>
+
+        <a id="logo-link"
+            href="https://www.aguasdejoinville.com.br/?servico=programa-aguas-para-sempre"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="Águas de Joinville — Programa Águas para Sempre">
+            <img id="map-logo" src="images/LOGOPSA.png" alt="LOGOPSA — Águas de Joinville">
+        </a>
+        
+        <a href="https://github.com/kongvinter//-guasparasempreMAPA/"
+            id="github-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub — psamap"
+            title="GitHub — psamap">
+            <img id="github-logo" src="images/githublogo.svg" alt="GitHub — psamap">
+        </a>
+
+        <!-- Popup de boas-vindas -->
+        <div id="popup">
+            <div id="popup-content">
+                <h2>Bem-vindo(a) ao Mapa do Programa Águas Para Sempre</h2>
+                <p>
+                    Este mapa exibe os limites territoriais e as propriedades associadas ao Programa
+                    Águas para Sempre na região rural de Joinville e Garuva, para análise e apresentação. As propriedades são classificadas em:
+                    <strong>Aderidas</strong>, <strong>Em processo de adesão</strong> e
+                    <strong>Interessadas / Manifestaram interesse</strong>.
+                </p>
+                <p>
+                    O botão <span class="fakePainel-btn">
+                        <img src="images/qui.svg" alt="Painel">
+                        Painel
+                    </span> mostra os dados agregados do grupo selecionado.
+                    A seleção considera apenas propriedades ativas no mapa. Propriedades desmarcadas
+                    na legenda não entram nos cálculos. Propriedades selecionadas são destacadas em vermelho.
+                    Passar o cursor sobre uma feição altera apenas a visualização e não os cálculos.
+                </p>
+                <p>
+                    O botão <span class="fakeGrafícos-btn">
+                        <img src="images/chartchar.svg" alt="Painel">Gráficos 
+                    </span> exibe os gráficos disponíveis.
+                </p>
+                <p> 
+                    O mapa é atualizado conforme necessário para refletir o estado atual do programa.
+                </p>
+                <button id="close-popup" aria-label="Fechar popup">
+                    <img src="images/close.svg" alt="Fechar">
                 </button>
-              
-                <button id="chart-btn">
-                  <img src="images/chartchar.svg" alt="Gráfico">
-                  <span class="btn-text">Gráficos</span>
-                </button>
-            
-                <button id="details-btn">
-                  <img src="images/detalhes.svg" alt="Sobre o Mapa">
-                  <span class="btn-text">Detalhes</span>
+            </div>
+        </div>
+
+        <!-- Painel de gráficos -->
+        <div id="painelchart" class="hidden panel" role="dialog" aria-hidden="true" tabindex="-1">
+            <button id="close-painelchart" type="button" class="close-panel">
+                <img src="images/close.svg" alt="Fechar">
+            </button>
+            <h2 style="margin:0;">Painel de Gráficos</h2>
+
+            <div id="chartSelectPanel" style="margin-top:10px;">
+                <select id="chartSelect">
+                    <option value="comparacao" data-icon="images/compar.svg">Comparação Total</option>
+                    <option value="linha" data-icon="images/linhatemp.svg">Linha do Tempo das Adesões</option>
+                    <option value="pagamentos">Pagamentos</option>
+                </select>
+            </div>
+
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <!-- Painel de estatísticas -->
+        <div id="stats-panel" class="hidden stats-panel side-panel" role="region" aria-label="Painel de informações">
+            <div class="stats-header" style="display:block; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h2 style="margin:0;">Painel de Acompanhamento</h2>
+                <div id="group-select-container">
+                    <select id="group-select">
+                        <option value="Propriedades Aderidas">Propriedades Aderidas</option>
+                        <option value="Processo">Propriedades em Processo</option>
+                        <option value="interessadas">Propriedades Interessadas</option>
+                        <option value="edital">Dados do edital</option>
+                    </select>
+                </div>
+                
+                <button id="close-panel" aria-label="Fechar painel">
+                    <img src="images/close.svg" alt="Fechar">
                 </button>
             </div>
 
-          <div id="coords"></div>
+            <div class="stats-content">
+                <div class="stats-list">
+                    <div class="stats-item">
+                        <span class="stats-label"><strong>Propriedades:</strong></span>
+                        <span class="stats-value" id="total-props">0</span>
+                    </div>
+                    
+                    <div class="stats-item">
+                        <span class="stats-label"><strong>Área total das propriedades:</strong></span>
+                        <span class="stats-value" id="total-area">0</span>
+                        <span class="stats-unit">ha</span>
+                    </div>
+                    
+                    <div class="stats-item">
+                        <span class="stats-label"><strong>Área verde total das propriedades:</strong></span>
+                        <span class="stats-value" id="total-green">0</span>
+                        <span class="stats-unit">ha</span>
+                    </div>
+                    
+                    <div class="stats-divider"></div>
+                    
+                    <div class="stats-item">
+                        <span class="stats-label" id="avg-area"><strong>Média da área total:</strong> — ha</span>
+                    </div>
+                    
+                    <div class="stats-item">
+                        <span class="stats-label" id="avg-green"><strong>Média da área verde total:</strong> — ha</span>
+                    </div>
+                    
+                    <div class="stats-divider"></div>
 
-          <div id="scale-control" class="scale-control">
-            <div id="scale-bar" class="scale-bar"></div>
-            <div id="scale-text" class="scale-text">0 m</div>
-          </div>
+                    <!--Os dados da área contratada e do valor médio/ha deverão ser atualizados manualmente trocando o numero na parte !!!!!! <span class="stats-value" !!!!!!!! -->
 
-          <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-          <script src="stats.js"></script>
-          <div id="compass-container">
-            <img id=""compass" src="images/compass2.svg">
-          </div>
-        <div id="map"></div>
+                    <div class="stats-item">
+                        <span class="stats-label"><strong>Área contratada:</strong></span>
+                        <span class="stats-value">155,30</span>
+                        <span class="stats-unit">ha</span>
+                    </div>
+                    
+                    <div class="stats-item">
+                        <span class="stats-label"><strong>Valor médio/ha:</strong></span>
+                        <span class="stats-value">R$ 670,28</span>
+                        <span class="stats-unit">/ha</span>
+                    </div>
+                </div>
+            </div>
 
-        <a id="logo-link"
-    href="https://www.aguasdejoinville.com.br/?servico=programa-aguas-para-sempre"
-    target="_blank" rel="noopener noreferrer"
-    aria-label="Águas de Joinville — Programa Águas para Sempre">
-    <img id="map-logo" src="images/LOGOPSA.png" alt="LOGOPSA — Águas de Joinville">
-</a>
-    <a href="https://github.com/kongvinter//-guasparasempreMAPA/"
-      id="github-link"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="GitHub — psamap"
-      title="GitHub — psamap">
-      <img id="github-logo" src="images/githublogo.svg" alt="GitHub — psamap">
-    </a>
+            <style>
+            .stats-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .stats-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 12px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+                border-left: 3px solid #007bff;
+                font-size: 14px;
+            }
+            
+            .stats-label {
+                color: #333;
+                flex: 1;
+            }
+            
+            .stats-value {
+                font-weight: 700;
+                color: #000000;
+                margin-right: 4px;
+                min-width: 60px;
+                text-align: right;
+            }
+            
+            .stats-unit {
+                color: #6c757d;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            
+            .stats-divider {
+                height: 1px;
+                background-color: #dee2e6;
+                margin: 4px 0;
+            }
+            
+            .stats-item:nth-child(1) { border-left-color: #ffffff; }
+            .stats-item:nth-child(2) { border-left-color: #ffffff; }
+            .stats-item:nth-child(3) { border-left-color: #ffffff; }
+            .stats-item:nth-child(5) { border-left-color: #ffffff; }
+            .stats-item:nth-child(6) { border-left-color: #ffffff; }
+            .stats-item:nth-child(8) { border-left-color: #ffffff; }
+            .stats-item:nth-child(9) { border-left-color: #ffffff; }
+            
+            .stats-item:hover {
+                background-color: #e9ecef;
+                transform: translateX(2px);
+                transition: all 0.2s ease;
+            }
+            </style>
 
-<div id="popup">
-        <div id="popup-content">
-          <h2>Bem-vindo(a) ao Mapa do Programa Águas Para Sempre</h2>
-          <p>
-         Este mapa exibe os limites territoriais e as propriedades associadas ao Programa
-         Águas para Sempre na região rural de Joinville e Garuva, para análise e apresentação. As propriedades são classificadas em:
-          <strong>Aderidas</strong>, <strong>Em processo de adesão</strong> e
-          <strong>Interessadas / Manifestaram interesse</strong>.
-    </p>
-    <p>
-         O botão <span class="fakePainel-btn">
-            <img src="images/qui.svg" alt="Painel">
-            Painel
-          </span> mostra os dados agregados do grupo selecionado.
-         A seleção considera apenas propriedades ativas no mapa. Propriedades desmarcadas
-         na legenda não entram nos cálculos. Propriedades selecionadas são destacadas em vermelho.
-         Passar o cursor sobre uma feição altera apenas a visualização e não os cálculos.
-    </p>
-     <p>
-         O botão <span class="fakeGrafícos-btn">
-            <img src="images/chartchar.svg" alt="Painel">Gráficos 
-        </span> exibe os gráficos disponíveis.
-         <p> 
-         O mapa é atualizado conforme necessário para refletir o estado atual do programa.
-         <p></p>
-    </p>
-    <button id="close-popup" aria-label="Fechar popup">
-        <img src="images/close.svg" alt="Fechar">
-        </button>
-    </div>
-</div>
-
-<div id="painelchart" class="hidden panel" role="dialog" aria-hidden="true" tabindex="-1">
-    <button id="close-painelchart" type="button" class="close-panel">
-        <img src="images/close.svg" alt="Fechar">
-    </button>
-        <h2 style="margin:0;">Painel de Gráficos</h2>
-
-        <div id="chartSelectPanel" style="margin-top:10px;">
-            <select id="chartSelect">
-            <option value="comparacao" data-icon="images/compar.svg">Comparação Total</option>
-            <option value="linha" data-icon="images/linhatemp.svg">Linha do Tempo das Adesões</option>
-            <option value="pagamentos">Pagamentos</option>
-          </select>
+            <div class="list-controls" style="margin-top:10px; display:none;">
+                <button id="sort-green" style="margin-right:6px;">Ordenar por Área Verde</button>
+                <button id="sort-total">Ordenar por Área Total</button>
+            </div>
+            
+            <table id="props-table" style="margin-top:10px; border-collapse: collapse; width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding:4px;">ID</th>
+                        <th style="border: 1px solid #ccc; padding:4px;">Área (ha)</th>
+                        <th style="border: 1px solid #ccc; padding:4px;">Área Verde (ha)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-
-        <canvas id="myChart"></canvas>
-</div>
-
-<div id="stats-panel" class="hidden stats-panel side-panel" role="region" aria-label="Painel de informações">
-    <div class="stats-header" style="display:block; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h2 style="margin:0;">Painel de Acompanhamento</h2>
-    <div id="group-select-container">
-      <select id="group-select">
-        <option value="Propriedades Aderidas">Propriedades Aderidas</option>
-        <option value="Processo">Propriedades em Processo</option>
-        <option value="interessadas">Propriedades Interessadas</option>
-        <option value="edital">Dados do edital</option>
-      </select>
-    </div>
-    
-    <button id="close-panel" aria-label="Fechar painel">
-        <img src="images/close.svg" alt="Fechar">
-    </button>
-
-    <div class="stats-content">
-        
-        <div class="stats-list">
-          <div class="stats-item">
-            <span class="stats-label"><strong>Propriedades:</strong></span>
-            <span class="stats-value" id="total-props">0</span>
-          </div>
-          
-          <div class="stats-item">
-            <span class="stats-label"><strong>Área total das propriedades:</strong></span>
-            <span class="stats-value" id="total-area">0</span>
-            <span class="stats-unit">ha</span>
-          </div>
-          
-          <div class="stats-item">
-            <span class="stats-label"><strong>Área verde total das propriedades:</strong></span>
-            <span class="stats-value" id="total-green">0</span>
-            <span class="stats-unit">ha</span>
-          </div>
-          
-          <div class="stats-divider"></div>
-          
-          <div class="stats-item">
-            <span class="stats-label" id="avg-area"><strong>Média da área total:</strong> — ha</span>
-          </div>
-          
-          <div class="stats-item">
-            <span class="stats-label" id="avg-green"><strong>Média da área verde total:</strong> — ha</span>
-          </div>
-          
-          <div class="stats-divider"></div>
-
-<!--Os dados da área contratada e do valor médio/ha deverão ser  atualizados manualmente trocando o numero na parte !!!!!! <span class="stats-value" !!!!!!!! -->
-
-          <div class="stats-item">
-            <span class="stats-label"><strong>Área contratada:</strong></span>
-            <span class="stats-value">155,30</span>
-            <span class="stats-unit">ha</span>
-          </div>
-          
-          <div class="stats-item">
-            <span class="stats-label"><strong>Valor médio/ha:</strong></span>
-            <span class="stats-value">R$ 670,28</span>
-            <span class="stats-unit">/ha</span>
-          </div>
-        </div>
-      </div>
-
-      <style>
-      .stats-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin: 0;
-        padding: 0;
-      }
-      
-      .stats-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 12px;
-        background-color: #f8f9fa;
-        border-radius: 4px;
-        border-left: 3px solid #007bff;
-        font-size: 14px;
-      }
-      
-      .stats-label {
-        color: #333;
-        flex: 1;
-      }
-      
-      .stats-value {
-        font-weight: 700;
-        color: #000000;
-        margin-right: 4px;
-        min-width: 60px;
-        text-align: right;
-      }
-      
-      .stats-unit {
-        color: #6c757d;
-        font-size: 12px;
-        font-weight: 500;
-      }
-      
-      .stats-divider {
-        height: 1px;
-        background-color: #dee2e6;
-        margin: 4px 0;
-      }
-      
-      .stats-item:nth-child(1) { border-left-color: #ffffff; }
-      .stats-item:nth-child(2) { border-left-color: #ffffff; }
-      .stats-item:nth-child(3) { border-left-color: #ffffff; }
-      .stats-item:nth-child(5) { border-left-color: #ffffff; }
-      .stats-item:nth-child(6) { border-left-color: #ffffff; }
-      .stats-item:nth-child(8) { border-left-color: #ffffff; }
-      .stats-item:nth-child(9) { border-left-color: #ffffff; }
-      
-      .stats-item:hover {
-        background-color: #e9ecef;
-        transform: translateX(2px);
-        transition: all 0.2s ease;
-      }
-      </style>
-
- <div class="list-controls" style="margin-top:10px; display:none;">
-        <button id="sort-green" style="margin-right:6px;">Ordenar por Área Verde</button>
-        <button id="sort-total">Ordenar por Área Total</button>
-   </div>
-   <table id="props-table" style="margin-top:10px; border-collapse: collapse; width: 100%;">
-    <thead>
-      <tr>
-        <th style="border: 1px solid #ccc; padding:4px;">ID</th>
-        <th style="border: 1px solid #ccc; padding:4px;">Área (ha)</th>
-        <th style="border: 1px solid #ccc; padding:4px;">Área Verde (ha)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////-->
 <!-- Até aqui-->
 <!--////////////////////////////////////////////////////////////////////////////////////////////////////-->
