@@ -1,0 +1,1 @@
+var json_ETACubatoPonto_5 = {"type":"FeatureCollection","name":"ETACubatoPonto_5","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"id":null},"geometry":{"type":"Point","coordinates":[-48.939363759940719,-26.181020914385282]}}]}
